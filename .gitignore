@@ -11,6 +11,7 @@ credentials.json
 # Ignore temporary directories
 /tmp/
 terraform/tmp/
+terraform/.terraform*
 
 # Ignore virtual environment
 .venv/
