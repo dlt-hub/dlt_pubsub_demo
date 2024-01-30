@@ -1,0 +1,16 @@
+# Ignore credentials file
+credentials.json
+
+# Ignore Terraform state files and backup files
+*.tfstate
+*.tfstate.backup
+
+# Ignore Terraform plan files (if generated)
+*.tfplan
+
+# Ignore temporary directories
+/tmp/
+terraform/tmp/
+
+# Ignore virtual environment
+.venv/
