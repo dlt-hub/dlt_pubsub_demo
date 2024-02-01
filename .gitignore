@@ -15,3 +15,6 @@ terraform/.terraform*
 
 # Ignore virtual environment
 .venv/
+
+# Ignore mac DS_Store
+cloud_functions/.DS_Store
