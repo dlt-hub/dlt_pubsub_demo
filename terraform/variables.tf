@@ -1,15 +1,15 @@
 variable "project_id" {
   type = string
-  default = "dlthub-analytics"
+  default = "Add Project ID"
 }
 
 variable "region" {
   type = string
-  default = "europe-west1"
+  default = "Add Region"
 }
 
 variable "service_account_email" {
   type = string
-  default = "pubsub-demo@dlthub-analytics.iam.gserviceaccount.com"
+  default = "Add Service Account Email"
   
 }
