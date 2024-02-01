@@ -1,18 +1,17 @@
-"""Publishes multiple messages to a Pub/Sub topic with an error handler."""
 from concurrent import futures
 from google.cloud import pubsub_v1
 from typing import Callable
 from datetime import datetime
-import  json
+import json
 import random
 
 # TODO(developer)
-project_id = "dlthub-analytics"
-topic_id = "telemetry_data_tera"
+project_id = "Add GCP Project ID"
+topic_id = "Add Topic ID"
 
 
 def generate_event(event_id):
-    
+
     event = {
         "event_id": event_id,
         "timestamp": datetime.now().isoformat(),
@@ -25,7 +24,6 @@ def generate_event(event_id):
         "transaction_details": None
     }
 
-    
     if event["event_type"] == "purchase":
         event["transaction_details"] = {
             "transaction_id": random.randint(10000, 99999),
@@ -35,6 +33,7 @@ def generate_event(event_id):
         }
 
     return json.dumps(event)
+
 
 # Batch settings for the publisher
 batch_settings = pubsub_v1.types.BatchSettings(
@@ -48,13 +47,13 @@ publisher = pubsub_v1.PublisherClient(batch_settings=batch_settings)
 topic_path = publisher.topic_path(project_id, topic_id)
 
 
-number_of_events = 50 
+number_of_events = 50
 for i in range(number_of_events):
-    event_data = generate_event(i)  
-    data = event_data.encode("utf-8")  
+    event_data = generate_event(i)
+    data = event_data.encode("utf-8")
 
-    
     publish_future = publisher.publish(topic_path, data)
-    print(f"Published event {i} to {topic_path}. Message ID: {publish_future.result()}")
+    print(
+        f"Published event {i} to {topic_path}. Message ID: {publish_future.result()}")
 
 print("All events published.")
