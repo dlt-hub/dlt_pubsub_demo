@@ -4,56 +4,73 @@ from typing import Callable
 from datetime import datetime
 import json
 import random
+import string
+import time
 
 # TODO(developer)
-project_id = "Add GCP Project ID"
-topic_id = "Add Topic ID"
+project_id = "Add Project ID here"
+topic_id = "Add Topic ID here"
+
+def generate_random_string(length):
+    return ''.join(random.choices(string.ascii_letters + string.digits, k=length))
 
 
-def generate_event(event_id):
-
-    event = {
-        "event_id": event_id,
-        "timestamp": datetime.now().isoformat(),
-        "event_type": random.choice(["login", "purchase", "logout", "signup"]),
-        "user_info": {
-            "user_id": random.randint(1000, 9999),
-            "username": f"user_{random.randint(100, 999)}",
-            "location": random.choice(["USA", "UK", "Canada", "Australia", "India"])
-        },
-        "transaction_details": None
-    }
-
-    if event["event_type"] == "purchase":
-        event["transaction_details"] = {
-            "transaction_id": random.randint(10000, 99999),
-            "amount": round(random.uniform(10.0, 500.0), 2),
-            "currency": random.choice(["USD", "EUR", "GBP", "INR", "AUD"]),
-            "items_purchased": random.randint(1, 10)
+def generate_event():
+    data = {
+            "anonymousId": generate_random_string(32),
+            "event": "pipeline_run",
+            "properties": {
+                "elapsed": round(random.uniform(0, 10), 6),
+                "success": random.choice([True, False]),
+                "destination_name": "duckdb",
+                "destination_type": "dlt.destinations.duckdb",
+                "pipeline_name_hash": generate_random_string(22),
+                "dataset_name_hash": generate_random_string(22),
+                "default_schema_name_hash": generate_random_string(22),
+                "transaction_id": generate_random_string(32),
+                "event_category": "pipeline",
+                "event_name": random.choice(["pipeline_run", "pipeline_load", "pipeline_extract", "pipeline_normalize"]),
+            },
+            "context": {
+                "ci_run": random.choice([True, False]),
+                "python": "3.11.5",
+                "cpu": random.randint(1, 16),
+                "exec_info": [],
+                "os": {
+                    "name": "Darwin",
+                    "version": "23.2.0"
+                },
+                "library": {
+                    "name": "dlt",
+                    "version": "0.4.5a0"
+                }
+            }
         }
-
-    return json.dumps(event)
-
-
-# Batch settings for the publisher
-batch_settings = pubsub_v1.types.BatchSettings(
-    max_messages=10,  # default 100
-    max_bytes=1024,  # default 1 MB
-    max_latency=2,  # default 10 ms
-)
+    return json.dumps(data)
 
 
-publisher = pubsub_v1.PublisherClient(batch_settings=batch_settings)
+# # Batch settings for the publisher
+# batch_settings = pubsub_v1.types.BatchSettings(
+#     max_messages=10,  # default 100
+#     max_bytes=1024,  # default 1 MB
+#     max_latency=2,  # default 10 ms
+# )
+
+
+publisher = pubsub_v1.PublisherClient()
 topic_path = publisher.topic_path(project_id, topic_id)
 
 
 number_of_events = 50
 for i in range(number_of_events):
-    event_data = generate_event(i)
+    event_data = generate_event()
     data = event_data.encode("utf-8")
 
     publish_future = publisher.publish(topic_path, data)
     print(
         f"Published event {i} to {topic_path}. Message ID: {publish_future.result()}")
+    # print(f"Published event {i} : {event_data}")
+    # time.sleep(1)
+    # print(event_data)
 
 print("All events published.")
