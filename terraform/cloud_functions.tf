@@ -1,7 +1,7 @@
 # Generates an archive of the source code compressed as a .zip file.
 data "archive_file" "source" {
   type        = "zip"
-  source_dir  = "./../cloud_functions_src"
+  source_dir  = "./../cloud_functions"
   output_path = "./../tmp/function.zip"
 }
 
@@ -35,10 +35,12 @@ resource "google_cloudfunctions2_function" "pubsub_function1" {
   }
 
   service_config {
-    max_instance_count  = 3
-    min_instance_count = 1
-    available_memory    = "1G"
+    max_instance_count  = 1
+    min_instance_count = 0
+    available_memory    = "512M"
     timeout_seconds     = 60
+    max_instance_request_concurrency = 50
+    available_cpu = 1
     service_account_email = var.service_account_email
   }
 
