@@ -18,7 +18,7 @@ def generate_random_string(length):
 def generate_event():
     data = {
             "anonymousId": generate_random_string(32),
-            "event": "pipeline_run",
+            "event": random.choice(["pipeline_run", "pipeline_load", "pipeline_extract", "pipeline_normalize"]),
             "properties": {
                 "elapsed": round(random.uniform(0, 10), 6),
                 "success": random.choice([True, False]),
@@ -29,7 +29,6 @@ def generate_event():
                 "default_schema_name_hash": generate_random_string(22),
                 "transaction_id": generate_random_string(32),
                 "event_category": "pipeline",
-                "event_name": random.choice(["pipeline_run", "pipeline_load", "pipeline_extract", "pipeline_normalize"]),
             },
             "context": {
                 "ci_run": random.choice([True, False]),
