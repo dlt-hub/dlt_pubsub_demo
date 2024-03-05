@@ -13,7 +13,8 @@ resource "google_pubsub_subscription" "tel_sub" {
 
     filename_prefix = "telemetry-"
 
-    max_duration = "600s"
+    max_duration = "300s"
+    max_bytes = 10000
 
   }
   depends_on = [ 
